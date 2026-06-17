@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glimpse — знайомства без фейків</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #0d0d14; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+
+    /* NAV */
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 0.5px solid rgba(255,255,255,0.08); position: sticky; top: 0; background: rgba(13,13,20,0.92); backdrop-filter: blur(12px); z-index: 100; }
+    .logo { font-size: 20px; font-weight: 500; color: #fff; text-decoration: none; }
+    .logo span { color: #a78bfa; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.5); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-btn { background: rgba(167,139,250,0.15); border: 0.5px solid rgba(167,139,250,0.4); color: #a78bfa; padding: 8px 18px; border-radius: 20px; font-size: 14px; cursor: pointer; text-decoration: none; transition: background 0.2s; }
+    .nav-btn:hover { background: rgba(167,139,250,0.25); }
+
+    /* HERO */
+    .hero { text-align: center; padding: 5rem 2rem 3rem; }
+    .hero-badge { display: inline-block; background: rgba(236,72,153,0.12); border: 0.5px solid rgba(236,72,153,0.3); color: #f472b6; font-size: 12px; padding: 5px 14px; border-radius: 20px; margin-bottom: 1.5rem; letter-spacing: 0.5px; }
+    .hero h1 { font-size: clamp(32px, 6vw, 52px); font-weight: 500; line-height: 1.1; letter-spacing: -1px; color: #fff; max-width: 660px; margin: 0 auto 1.25rem; }
+    .hero h1 em { color: #f472b6; font-style: normal; }
+    .hero h1 strong { color: #a78bfa; font-weight: 500; }
+    .hero p { font-size: 18px; color: rgba(255,255,255,0.45); max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.65; }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: linear-gradient(135deg, #a78bfa, #f472b6); color: #fff; padding: 13px 28px; border-radius: 24px; font-size: 15px; font-weight: 500; border: none; cursor: pointer; text-decoration: none; display: inline-block; }
+    .btn-ghost { background: transparent; border: 0.5px solid rgba(255,255,255,0.2); color: #fff; padding: 13px 28px; border-radius: 24px; font-size: 15px; cursor: pointer; text-decoration: none; display: inline-block; transition: border-color 0.2s; }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.4); }
+
+    /* PHONES */
+    .phones { display: flex; justify-content: center; gap: 16px; padding: 3rem 2rem 2rem; align-items: flex-end; }
+    .phone { width: 130px; background: #1a1a26; border: 0.5px solid rgba(255,255,255,0.1); border-radius: 22px; overflow: hidden; }
+    .phone.center { width: 150px; transform: translateY(-16px); border-color: rgba(244,114,182,0.4); }
+    .phone-bar { height: 8px; background: #111; border-radius: 22px 22px 0 0; }
+    .phone-screen { padding: 12px 10px; }
+    .avatar { width: 100%; aspect-ratio: 1; border-radius: 14px; margin-bottom: 8px; overflow: hidden; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    .phone-name { font-size: 12px; font-weight: 500; color: #fff; margin-bottom: 3px; }
+    .phone-tag { font-size: 10px; color: rgba(255,255,255,0.4); }
+    .verified-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(52,211,153,0.12); border: 0.5px solid rgba(52,211,153,0.3); color: #34d399; font-size: 10px; padding: 3px 8px; border-radius: 10px; margin-top: 6px; }
+
+    /* STATS */
+    .stats { display: flex; justify-content: center; gap: 2px; padding: 0 2rem 3rem; flex-wrap: wrap; }
+    .stat { flex: 1; min-width: 120px; max-width: 160px; text-align: center; padding: 1.25rem 1rem; background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.07); }
+    .stat:first-child { border-radius: 14px 0 0 14px; }
+    .stat:last-child { border-radius: 0 14px 14px 0; }
+    .stat-num { font-size: 26px; font-weight: 500; color: #fff; margin-bottom: 4px; }
+    .stat-lbl { font-size: 12px; color: rgba(255,255,255,0.4); }
+
+    /* QUOTE */
+    .quote-section { padding: 4rem 2rem; text-align: center; max-width: 600px; margin: 0 auto; }
+    .quote-text { font-size: 22px; color: rgba(255,255,255,0.75); line-height: 1.6; font-style: italic; margin-bottom: 1.25rem; }
+    .quote-text em { color: #f472b6; font-style: normal; }
+    .quote-author { font-size: 13px; color: rgba(255,255,255,0.3); }
+
+    /* SECTIONS */
+    .section { padding: 4rem 2rem; max-width: 720px; margin: 0 auto; }
+    .section-tag { font-size: 12px; color: #f472b6; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .section h2 { font-size: clamp(24px, 4vw, 32px); font-weight: 500; color: #fff; margin-bottom: 0.75rem; letter-spacing: -0.5px; }
+    .section-sub { font-size: 16px; color: rgba(255,255,255,0.4); line-height: 1.6; margin-bottom: 2.5rem; }
+
+    /* STEPS */
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .step { background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 1.5rem; }
+    .step-num { font-size: 11px; color: #a78bfa; letter-spacing: 1px; margin-bottom: 1rem; }
+    .step-icon { font-size: 24px; margin-bottom: 0.75rem; }
+    .step h3 { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 0.5rem; }
+    .step p { font-size: 13px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+    .step.accent { border-color: rgba(244,114,182,0.3); background: rgba(244,114,182,0.05); }
+    .step.accent .step-num { color: #f472b6; }
+
+    /* FEATURES */
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 1rem; }
+    .feature { background: rgba(255,255,255,0.03); border: 0.5px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.25rem; }
+    .feature-icon { font-size: 20px; margin-bottom: 0.75rem; }
+    .feature h3 { font-size: 14px; font-weight: 500; color: #fff; margin-bottom: 0.4rem; }
+    .feature p { font-size: 12px; color: rgba(255,255,255,0.4); line-height: 1.5; }
+
+    /* WAITLIST */
+    .waitlist { background: rgba(167,139,250,0.05); border: 0.5px solid rgba(167,139,250,0.2); border-radius: 20px; padding: 3rem 2rem; text-align: center; margin: 2rem; }
+    .waitlist h2 { font-size: 28px; font-weight: 500; color: #fff; margin-bottom: 0.75rem; }
+    .waitlist p { font-size: 15px; color: rgba(255,255,255,0.4); margin-bottom: 1.75rem; }
+    .wl-form { display: flex; gap: 10px; max-width: 400px; margin: 0 auto; flex-wrap: wrap; justify-content: center; }
+    .wl-form input { flex: 1; min-width: 200px; background: rgba(255,255,255,0.06); border: 0.5px solid rgba(255,255,255,0.15); border-radius: 24px; padding: 13px 20px; color: #fff; font-size: 15px; outline: none; font-family: inherit; }
+    .wl-form input::placeholder { color: rgba(255,255,255,0.3); }
+    .wl-form input:focus { border-color: rgba(167,139,250,0.5); }
+    .wl-count { font-size: 12px; color: rgba(255,255,255,0.3); margin-top: 1rem; }
+
+    /* FOOTER */
+    footer { border-top: 0.5px solid rgba(255,255,255,0.07); padding: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.35); }
+    .footer-logo span { color: #a78bfa; }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.active { display: flex; }
+    .modal-box { background: #1e1e2e; border: 0.5px solid rgba(167,139,250,0.3); border-radius: 20px; padding: 2rem; max-width: 520px; width: 100%; max-height: 80vh; overflow-y: auto; position: relative; }
+    .modal-close { position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.08); border: none; color: rgba(255,255,255,0.5); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { background: rgba(255,255,255,0.15); }
+    .modal-box h2 { font-size: 20px; font-weight: 500; color: #fff; margin-bottom: 1rem; }
+    .modal-box p { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.7; margin-bottom: 0.75rem; }
+    .modal-box h3 { font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.8); margin: 1.25rem 0 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="logo">glimpse<span>.</span></a>
+    <div class="nav-links">
+      <a href="#how-it-works">Як це працює</a>
+    </div>
+    <a href="#waitlist" class="nav-btn">Ранній доступ</a>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-badge">✦ знайомства нового покоління</div>
+    <h1>Відчуй справжній <em>зв'язок</em> — без масок і <strong>фейків</strong></h1>
+    <p>Glimpse — це місце, де кожен профіль реальний, кожна розмова щира, а кожне знайомство може стати початком чогось особливого</p>
+    <div class="hero-btns">
+      <a href="#waitlist" class="btn-primary">Отримати доступ</a>
+      <a href="#how-it-works" class="btn-ghost">Дізнатись більше</a>
+    </div>
+  </div>
+
+  <div class="phones">
+    <div class="phone">
+      <div class="phone-bar"></div>
+      <div class="phone-screen">
+        <div class="avatar"><img src="photo1.jpg" alt="Анна" /></div>
+        <div class="phone-name">Анна, 23</div>
+        <div class="phone-tag">Київ · дизайнерка</div>
+        <div class="verified-badge">✓ verified</div>
+      </div>
+    </div>
+    <div class="phone center">
+      <div class="phone-bar"></div>
+      <div class="phone-screen">
+        <div class="avatar"><img src="photo2.jpg" alt="Марія" style="object-position: center 20%;" /></div>
+        <div class="phone-name">Марія, 25</div>
+        <div class="phone-tag">Львів · маркетинг</div>
+        <div class="verified-badge">✓ verified</div>
+      </div>
+    </div>
+    <div class="phone">
+      <div class="phone-bar"></div>
+      <div class="phone-screen">
+        <div class="avatar"><img src="photo3.jpg" alt="Олена" /></div>
+        <div class="phone-name">Олена, 22</div>
+        <div class="phone-tag">Одеса · архітектор</div>
+        <div class="verified-badge">✓ verified</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-lbl">реальні профілі</div></div>
+    <div class="stat"><div class="stat-num">0</div><div class="stat-lbl">ботів і фейків</div></div>
+    <div class="stat"><div class="stat-num">30с</div><div class="stat-lbl">верифікація</div></div>
+  </div>
+
+  <div class="quote-section">
+    <div class="quote-text">"Ми втомились від додатків, де невідомо з ким ти спілкуєшся. Glimpse — це <em>знайомства як у житті</em>: відкриті, справжні, живі"</div>
+    <div class="quote-author">— команда Zync Studio</div>
+  </div>
+
+  <div class="section" id="how-it-works">
+    <div class="section-tag">Як це працює</div>
+    <h2>Три кроки до справжнього знайомства</h2>
+    <p class="section-sub">Проста верифікація, яка захищає серця всіх на платформі</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-icon">📲</div>
+        <h3>Завантаж Glimpse</h3>
+        <p>App Store або Google Play — реєстрація займе менше хвилини</p>
+      </div>
+      <div class="step accent">
+        <div class="step-num">02</div>
+        <div class="step-icon">🎥</div>
+        <h3>Запиши коротке відео</h3>
+        <p>30 секунд — і ти підтверджуєш, що ти реальна людина. Ніхто інший його не побачить</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-icon">✨</div>
+        <h3>Знайди свою людину</h3>
+        <p>Знайомся, спілкуйся, закохуйся — з тими, хто справді існує</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-tag">Чому Glimpse</div>
+    <h2>Більше, ніж просто додаток</h2>
+    <p class="section-sub">Ми створили простір, де можна бути собою і зустріти когось особливого</p>
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🛡️</div>
+        <h3>Тільки реальні люди</h3>
+        <p>Відеоверифікація гарантує, що за кожним профілем — жива людина</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">💬</div>
+        <h3>Справжні розмови</h3>
+        <p>Без скриптів і масок. Просто ти — і людина навпроти</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔒</div>
+        <h3>Твоя приватність</h3>
+        <p>Відео верифікації не зберігається. Твої дані — тільки твої</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="waitlist" id="waitlist">
+    <h2>Будь першим 💜</h2>
+    <p>Glimpse ще в розробці. Залиш email — отримаєш доступ раніше за всіх</p>
+    <div class="wl-form">
+      <input type="email" placeholder="твій@email.com" />
+      <button class="btn-primary" type="button">Хочу доступ</button>
+    </div>
+    <div class="wl-count">Вже 847 людей в черзі</div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">glimpse<span>.</span> by Zync Studio</div>
+    <div class="footer-links">
+      <a href="#" onclick="openModal('terms'); return false;">Умови</a>
+      <a href="#" onclick="openModal('privacy'); return false;">Приватність</a>
+      <a href="jobs.html">Вакансії</a>
+    </div>
+  </footer>
+
+  <!-- MODAL: Умови -->
+  <div class="modal-overlay" id="modal-terms">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('terms')">✕</button>
+      <h2>Умови використання</h2>
+      <p>Використовуючи Glimpse, ви погоджуєтесь з цими умовами. Будь ласка, прочитайте їх уважно.</p>
+      <h3>1. Використання сервісу</h3>
+      <p>Glimpse призначений для людей віком 18+. Забороняється створювати фейкові акаунти, використовувати чужі фото або видавати себе за іншу особу.</p>
+      <h3>2. Відеоверифікація</h3>
+      <p>Для використання платформи необхідно пройти відеоверифікацію. Відео використовується лише для підтвердження особи і не зберігається після перевірки.</p>
+      <h3>3. Контент</h3>
+      <p>Забороняється розміщувати образливий, непристойний або незаконний контент. Ми залишаємо за собою право видаляти такий контент і блокувати акаунти.</p>
+      <h3>4. Зміни умов</h3>
+      <p>Ми можемо оновлювати ці умови. Про важливі зміни ми повідомимо через додаток або email.</p>
+    </div>
+  </div>
+
+  <!-- MODAL: Приватність -->
+  <div class="modal-overlay" id="modal-privacy">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal('privacy')">✕</button>
+      <h2>Політика приватності</h2>
+      <p>Ми серйозно ставимось до захисту ваших персональних даних.</p>
+      <h3>Які дані ми збираємо</h3>
+      <p>Email, ім'я, вік, місто — мінімально необхідне для роботи платформи. Відео верифікації не зберігається після перевірки.</p>
+      <h3>Як ми використовуємо дані</h3>
+      <p>Виключно для роботи сервісу: верифікація, пошук збігів, комунікація. Ми не продаємо ваші дані третім особам — ніколи.</p>
+      <h3>Ваші права</h3>
+      <p>Ви можете в будь-який момент запросити видалення свого акаунту і всіх пов'язаних даних. Напишіть нам на hello@zyncstudio.com.</p>
+      <h3>Контакт</h3>
+      <p>Питання щодо приватності: hello@zyncstudio.com</p>
+    </div>
+  </div>
+
+  <script>
+    function openModal(name) {
+      document.getElementById('modal-' + name).classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal(name) {
+      document.getElementById('modal-' + name).classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

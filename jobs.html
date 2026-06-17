@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Вакансії — Glimpse</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0d0d14; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 2rem; border-bottom: 0.5px solid rgba(255,255,255,0.08); position: sticky; top: 0; background: rgba(13,13,20,0.92); backdrop-filter: blur(12px); z-index: 100; }
+    .logo { font-size: 20px; font-weight: 500; color: #fff; text-decoration: none; }
+    .logo span { color: #a78bfa; }
+    .back-btn { font-size: 14px; color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
+    .back-btn:hover { color: #fff; }
+    .hero { padding: 4rem 2rem 3rem; max-width: 720px; margin: 0 auto; }
+    .page-tag { font-size: 12px; color: #a78bfa; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .hero h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 500; color: #fff; letter-spacing: -0.5px; margin-bottom: 0.75rem; }
+    .hero p { font-size: 17px; color: rgba(255,255,255,0.45); line-height: 1.65; max-width: 520px; }
+    .jobs-list { max-width: 720px; margin: 0 auto; padding: 0 2rem 5rem; }
+    .job-card { background: rgba(255,255,255,0.03); border: 0.5px solid rgba(167,139,250,0.25); border-radius: 18px; padding: 1.75rem; }
+    .job-title { font-size: 20px; font-weight: 500; color: #fff; margin-bottom: 6px; }
+    .stage-note { font-size: 13px; color: rgba(255,255,255,0.35); margin-bottom: 10px; font-style: italic; }
+    .stage-note em { color: #f472b6; font-style: normal; }
+    .job-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; padding: 4px 10px; border-radius: 10px; }
+    .badge-purple { background: rgba(167,139,250,0.12); border: 0.5px solid rgba(167,139,250,0.3); color: #a78bfa; }
+    .badge-green { background: rgba(52,211,153,0.1); border: 0.5px solid rgba(52,211,153,0.3); color: #34d399; }
+    .badge-pink { background: rgba(244,114,182,0.1); border: 0.5px solid rgba(244,114,182,0.3); color: #f472b6; }
+    .job-desc { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.7; margin-bottom: 1.5rem; }
+    .job-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+    .detail { background: rgba(255,255,255,0.04); border-radius: 12px; padding: 0.75rem 1rem; }
+    .detail-label { font-size: 11px; color: rgba(255,255,255,0.3); margin-bottom: 4px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .detail-value { font-size: 14px; color: #fff; font-weight: 500; }
+    .detail-value.highlight { color: #34d399; }
+    .resp-title { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .resp-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem; }
+    .resp-list li { font-size: 14px; color: rgba(255,255,255,0.45); display: flex; align-items: flex-start; gap: 10px; line-height: 1.55; }
+    .resp-list li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #a78bfa; margin-top: 7px; flex-shrink: 0; }
+    .resp-list li .sub { display: block; font-size: 12px; color: rgba(255,255,255,0.25); margin-top: 3px; }
+    .form-block { background: rgba(167,139,250,0.06); border: 0.5px solid rgba(167,139,250,0.25); border-radius: 16px; padding: 1.5rem; }
+    .form-block h3 { font-size: 16px; font-weight: 500; color: #fff; margin-bottom: 0.3rem; }
+    .form-block > p { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 1.25rem; }
+    .form-fields { display: flex; flex-direction: column; gap: 8px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .field-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .field-label { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 0.3px; padding-left: 4px; }
+    .field-label span { color: rgba(255,255,255,0.2); font-size: 10px; margin-left: 4px; }
+    .form-input { background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 9px 14px; color: #fff; font-size: 14px; outline: none; font-family: inherit; width: 100%; transition: border-color 0.2s; }
+    .form-input:focus { border-color: rgba(167,139,250,0.5); background: rgba(255,255,255,0.07); }
+    .form-input::placeholder { color: rgba(255,255,255,0.25); font-size: 13px; }
+    .form-input.error { border-color: rgba(244,114,182,0.6); }
+    .error-msg { font-size: 11px; color: #f472b6; padding-left: 4px; display: none; }
+    .error-msg.show { display: block; }
+    button.form-submit { background-color: #ffffff !important; background-image: none !important; color: #0d0d14 !important; border: none !important; padding: 13px 28px; border-radius: 24px; font-size: 15px; font-weight: 700 !important; cursor: pointer; width: 100%; margin-top: 6px; font-family: inherit; }
+    button.form-submit:hover { background-color: #eeeeee !important; }
+    button.form-submit:disabled { opacity: 0.5 !important; cursor: not-allowed; }
+    .form-success { display: none; text-align: center; padding: 1rem 0; }
+    .form-success-icon { font-size: 36px; margin-bottom: 0.75rem; }
+    .form-success h3 { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 0.5rem; }
+    .form-success p { font-size: 14px; color: rgba(255,255,255,0.45); }
+    footer { border-top: 0.5px solid rgba(255,255,255,0.07); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-size: 14px; color: rgba(255,255,255,0.3); }
+    .footer-logo span { color: #a78bfa; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 13px; color: rgba(255,255,255,0.25); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+  .tg-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(167,139,250,0.15); border: 0.5px solid rgba(167,139,250,0.35); color: #a78bfa; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; text-decoration: none; transition: background 0.2s; }
+    .tg-btn:hover { background: rgba(167,139,250,0.25); }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="logo">glimpse<span>.</span></a>
+    <a href="index.html" class="back-btn">← На головну</a>
+  </nav>
+  <div class="hero">
+    <div class="page-tag">Вакансії</div>
+    <h1>Приєднуйся до Glimpse</h1>
+    <p>Ми будуємо dating-додаток нового покоління і шукаємо людей, які допоможуть зробити його кращим</p>
+  </div>
+  <div class="jobs-list">
+    <div class="job-card">
+      <div class="job-title">Тестувальник мобільного додатку</div>
+      <div class="job-meta">
+        <span class="badge badge-green">₴ З оплатою</span>
+        <span class="badge badge-purple">⏱ Тимчасова підробітка</span>
+        <span class="badge badge-pink">📍 Віддалено / На місці</span>
+      </div>
+      <p class="stage-note">На даному етапі розробки шукаємо <em>чоловіків віком 35+</em></p>
+      <p class="job-desc">Допоможи нам зробити Glimpse кращим ще до публічного запуску. Досвід не потрібен — усе пояснюємо. Твоя думка напряму вплине на те, яким буде додаток.</p>
+      <div class="job-details">
+        <div class="detail"><div class="detail-label">Оплата</div><div class="detail-value highlight">від 1500 грн / блок</div></div>
+        <div class="detail"><div class="detail-label">Формат роботи</div><div class="detail-value">Короткі блоки по кілька годин</div></div>
+        <div class="detail"><div class="detail-label">Досвід</div><div class="detail-value">Не потрібен</div></div>
+      </div>
+      <div class="resp-title">Що потрібно робити</div>
+      <ul class="resp-list">
+        <li><div>Пройти відеоверифікацію в додатку<span class="sub">Коротке відео підтверджує, що ти реальна людина — ключова функція, яку ми зараз тестуємо</span></div></li>
+        <li><div>Оцінити зручність процесу верифікації<span class="sub">Чи все зрозуміло? Чи швидко? Чи комфортно?</span></div></li>
+        <li><div>Поділитись враженнями від додатку в цілому<span class="sub">Що зручно, що незрозуміло, що можна покращити</span></div></li>
+        <li><div>Описати знайдені проблеми простими словами<span class="sub">Технічних знань не потрібно — просто розкажіть що сталось</span></div></li>
+      </ul>
+      <div class="form-block">
+        <h3>Залишити заявку</h3>
+        <p>Заповни форму — ми зв'яжемось з Вами найближчим часом</p>
+        <div id="form-wrap">
+          <div class="form-fields">
+            <div class="form-row">
+              <div class="field-wrap">
+                <div class="field-label">Ім'я</div>
+                <input class="form-input" id="f-name" type="text" placeholder="Олексій" />
+                <div class="error-msg" id="name-error">Заповніть будь ласка</div>
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">Вік</div>
+                <input class="form-input" id="f-age" type="number" placeholder="38" min="18" max="99" />
+                <div class="error-msg" id="age-error">Заповніть будь ласка</div>
+              </div>
+            </div>
+            <div class="field-wrap">
+              <div class="field-label">Номер телефону</div>
+              <input class="form-input" id="f-phone" type="tel" placeholder="+38(0__) ___-__-__" maxlength="18"
+                onfocus="phoneFocus(this)" oninput="phoneInput(this)"
+                onkeydown="phoneKeydown(event, this)" onblur="phoneBlur(this)" />
+              <div class="error-msg" id="phone-error">Введіть правильний номер телефону</div>
+            </div>
+            <div class="field-wrap">
+              <div class="field-label">Telegram нік <span>необов'язково</span></div>
+              <input class="form-input" id="f-tg" type="text" placeholder="@username"
+                onfocus="tgFocus(this)" oninput="tgInput(this)"
+                onkeydown="tgKeydown(event, this)" onblur="tgBlur(this)" />
+            </div>
+            <div class="field-wrap">
+              <div class="field-label">Місто</div>
+              <input class="form-input" id="f-city" type="text" placeholder="Київ" />
+              <div class="error-msg" id="city-error">Заповніть будь ласка</div>
+            </div>
+            <button class="form-submit" id="f-btn" onclick="sendForm()">Відправити заявку →</button>
+          </div>
+        </div>
+        <div class="form-success" id="form-success">
+          <div class="form-success-icon">💜</div>
+          <h3>Заявку отримано!</h3>
+          <p>Ми зв'яжемось з Вами найближчим часом</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-logo">glimpse<span>.</span> by Zync Studio</div>
+    <div class="footer-links">
+      <a href="index.html">Головна</a>
+      <a href="index.html#waitlist">Ранній доступ</a>
+      <a href="https://t.me/hr_glimpsey" class="tg-btn" target="_blank"><i class="fa-brands fa-telegram" style="font-size:15px"></i> @hr_glimpsey</a>
+    </div>
+  </footer>
+  <script>
+    const PHONE_PREFIX = '+38(0';
+    function getPhoneDigits(val) { return val.slice(PHONE_PREFIX.length).replace(/\D/g, ''); }
+    function buildPhoneMask(digits) {
+      digits = digits.slice(0, 9);
+      let r = PHONE_PREFIX;
+      if (digits.length > 0) r += digits.slice(0, 2);
+      if (digits.length >= 2) r += ') ';
+      if (digits.length > 2) r += digits.slice(2, 5);
+      if (digits.length >= 5) r += '-';
+      if (digits.length > 5) r += digits.slice(5, 7);
+      if (digits.length >= 7) r += '-';
+      if (digits.length > 7) r += digits.slice(7, 9);
+      return r;
+    }
+    function phoneFocus(input) {
+      if (!input.value) input.value = PHONE_PREFIX;
+      setTimeout(() => input.setSelectionRange(input.value.length, input.value.length), 0);
+    }
+    function phoneKeydown(e, input) {
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        let digits = getPhoneDigits(input.value);
+        if (digits.length === 0) return;
+        digits = digits.slice(0, -1);
+        input.value = buildPhoneMask(digits);
+        setTimeout(() => input.setSelectionRange(input.value.length, input.value.length), 0);
+      }
+    }
+    function phoneInput(input) {
+      if (!input.value.startsWith(PHONE_PREFIX)) input.value = PHONE_PREFIX;
+      let digits = getPhoneDigits(input.value);
+      input.value = buildPhoneMask(digits);
+      setTimeout(() => input.setSelectionRange(input.value.length, input.value.length), 0);
+    }
+    function phoneBlur(input) {
+      const digits = getPhoneDigits(input.value);
+      const err = document.getElementById('phone-error');
+      if (input.value !== PHONE_PREFIX && digits.length < 9) {
+        input.classList.add('error'); err.classList.add('show');
+      } else {
+        input.classList.remove('error'); err.classList.remove('show');
+      }
+      if (input.value === PHONE_PREFIX) input.value = '';
+    }
+    function isPhoneComplete(val) { return getPhoneDigits(val).length === 9; }
+
+    const TG_PREFIX = '@';
+    function tgFocus(input) {
+      if (!input.value) input.value = TG_PREFIX;
+      setTimeout(() => input.setSelectionRange(input.value.length, input.value.length), 0);
+    }
+    function tgKeydown(e, input) {
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        if (input.value.length <= TG_PREFIX.length) return;
+        input.value = input.value.slice(0, -1);
+        setTimeout(() => input.setSelectionRange(input.value.length, input.value.length), 0);
+      }
+    }
+    function tgInput(input) {
+      if (!input.value.startsWith(TG_PREFIX)) input.value = TG_PREFIX;
+      let username = input.value.slice(1).replace(/@/g, '');
+      input.value = TG_PREFIX + username;
+      setTimeout(() => input.setSelectionRange(input.value.length, input.value.length), 0);
+    }
+    function tgBlur(input) {
+      if (input.value === TG_PREFIX) input.value = '';
+    }
+
+    function showErr(id, errId) {
+      document.getElementById(id).classList.add('error');
+      document.getElementById(errId).classList.add('show');
+    }
+    function hideErr(id, errId) {
+      document.getElementById(id).classList.remove('error');
+      document.getElementById(errId).classList.remove('show');
+    }
+
+    async function sendForm() {
+      const name = document.getElementById('f-name').value.trim();
+      const age = document.getElementById('f-age').value.trim();
+      const phone = document.getElementById('f-phone').value.trim();
+      const tg = document.getElementById('f-tg').value.trim();
+      const city = document.getElementById('f-city').value.trim();
+      const btn = document.getElementById('f-btn');
+
+      let hasError = false;
+      if (!name) { showErr('f-name', 'name-error'); hasError = true; } else hideErr('f-name', 'name-error');
+      if (!age) { showErr('f-age', 'age-error'); hasError = true; } else hideErr('f-age', 'age-error');
+      if (!isPhoneComplete(phone)) { showErr('f-phone', 'phone-error'); hasError = true; } else hideErr('f-phone', 'phone-error');
+      if (!city) { showErr('f-city', 'city-error'); hasError = true; } else hideErr('f-city', 'city-error');
+      if (hasError) return;
+
+      btn.disabled = true; btn.textContent = 'Відправляємо...';
+      const tgFormatted = tg && tg !== '@' ? tg : 'не вказано';
+      const text = `🆕 Нова заявка — Glimpse\n👤 Ім'я: ${name}\n🎂 Вік: ${age}\n📱 Телефон: ${phone}\n✈️ Telegram: ${tgFormatted}\n📍 Місто: ${city}`;
+      try {
+        const res = await fetch('https://api.telegram.org/bot8517164127:AAEjQKjtxH_zTQzRkaDDlbE0fhlpnX8pkWI/sendMessage', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: '8750201546', text })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          document.getElementById('form-wrap').style.display = 'none';
+          document.getElementById('form-success').style.display = 'block';
+        } else { throw new Error(); }
+      } catch(e) {
+        btn.disabled = false; btn.textContent = 'Відправити заявку →';
+        alert('Помилка. Спробуй ще раз.');
+      }
+    }
+  </script>
+</body>
+</html>
